@@ -30,7 +30,7 @@ public class MainJFrame extends javax.swing.JFrame {
         configuracionInicial();
 
         cargarProtocolos();
-
+       
     }
 
     @SuppressWarnings("unchecked")
@@ -301,7 +301,7 @@ public class MainJFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField_dataToSend, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         pack();
@@ -453,12 +453,26 @@ public class MainJFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     public void procesarRespuesta(String respuesta) {
+        System.out.println("Respuesta "+respuesta);
         switch (respuesta) {
             case Constantes.RESPUESTA_BLUE_SKY:
-                jTextArea_incomingData.setText("Conexion establecida Blue Sky");
+                jTextArea_incomingData.append("Conexion establecida Blue Sky\n");
+                dataBuffer = "";
+                break;
+            case Constantes.RESPUESTA_GILBARCO:
+               
+                jTextArea_incomingData.append("Conexion establecida Gilbarco\n");
+                dataBuffer = "";
+                break;
+            case Constantes.RESPUESTA_WAYNE:
+                
+                jTextArea_incomingData.append("Conexion establecida Wayne\n");
+                dataBuffer = "";
                 break;
             default:
-                throw new AssertionError();
+                System.out.println("Opcion no configurada");
+                dataBuffer = "";
+                break;
         }
     }
 
