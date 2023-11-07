@@ -17,6 +17,8 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import java.io.OutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainJFrame extends javax.swing.JFrame {
 
@@ -56,7 +58,7 @@ public class MainJFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea_incomingData = new javax.swing.JTextArea();
         jLabel7 = new javax.swing.JLabel();
-        jComboBox_endLine = new javax.swing.JComboBox<>();
+        jComboBoxPer = new javax.swing.JComboBox<>();
         jButton_send = new javax.swing.JButton();
         jTextField_dataToSend = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
@@ -199,9 +201,14 @@ public class MainJFrame extends javax.swing.JFrame {
         jTextArea_incomingData.setRows(5);
         jScrollPane1.setViewportView(jTextArea_incomingData);
 
-        jLabel7.setText("END LINE");
+        jLabel7.setText("PERSISTENTE");
 
-        jComboBox_endLine.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None ", "Nueva linea", "Carriage Return", "Both", " " }));
+        jComboBoxPer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SI", "NO" }));
+        jComboBoxPer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxPerActionPerformed(evt);
+            }
+        });
 
         jButton_send.setText("SEND");
         jButton_send.addActionListener(new java.awt.event.ActionListener() {
@@ -259,7 +266,7 @@ public class MainJFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addGap(18, 18, 18)
-                        .addComponent(jComboBox_endLine, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jComboBoxPer, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton_send, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(28, 28, 28))
@@ -279,20 +286,18 @@ public class MainJFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel7)
-                                .addComponent(jComboBox_endLine, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton_send, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
-                                .addGap(1, 1, 1)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton_send, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBoxPer, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))
+                        .addGap(10, 10, 10))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -351,15 +356,39 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jCombo_comPortPopupMenuWillBecomeVisible
 
     private void jButton_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_sendActionPerformed
-        outputStream1 = serialPort1.getOutputStream();
-        String dataTosen = jTextField_dataToSend.getText();
         try {
-            outputStream1.write(dataTosen.getBytes());
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
+            sendMessage();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton_sendActionPerformed
 
+    private void sendMessage() throws InterruptedException{
+        outputStream1 = serialPort1.getOutputStream();
+        String dataTosen = jTextField_dataToSend.getText();
+        try{
+        if(jComboBoxPer.getSelectedItem().toString().equals("SI")){
+            sendPersistenceSend(dataTosen);
+        }else{
+            outputStream1.write(dataTosen.getBytes());
+        }
+          } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+    
+    private void sendPersistenceSend(String dataTosend) throws InterruptedException{
+        while (true) {      
+            try {
+                System.out.println("Aqui");
+                outputStream1.write(dataTosend.getBytes());
+            } catch (IOException ex) {
+                Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Thread.sleep(2000);
+        }
+    }
+    
     private void Serial_EventBasedReading(SerialPort activePort) {
         activePort.addDataListener(new SerialPortDataListener() {
             @Override
@@ -389,6 +418,10 @@ public class MainJFrame extends javax.swing.JFrame {
     private void jComboProtocolsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboProtocolsItemStateChanged
 
     }//GEN-LAST:event_jComboProtocolsItemStateChanged
+
+    private void jComboBoxPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxPerActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxPerActionPerformed
 
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -424,7 +457,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton_close;
     private javax.swing.JButton jButton_open;
     private javax.swing.JButton jButton_send;
-    private javax.swing.JComboBox<String> jComboBox_endLine;
+    private javax.swing.JComboBox<String> jComboBoxPer;
     private javax.swing.JComboBox<String> jComboProtocols;
     private javax.swing.JComboBox<String> jCombo_baudRate;
     private javax.swing.JComboBox<String> jCombo_comPort;
@@ -465,7 +498,6 @@ public class MainJFrame extends javax.swing.JFrame {
                 dataBuffer = "";
                 break;
             case Constantes.RESPUESTA_WAYNE:
-                
                 jTextArea_incomingData.append("Conexion establecida Wayne\n");
                 dataBuffer = "";
                 break;
@@ -481,7 +513,7 @@ public class MainJFrame extends javax.swing.JFrame {
         jCombo_dataBits.setSelectedItem("8");
         jCombo_stopBits.setSelectedItem("1");
         jCombo_parityBits.setSelectedItem("NO_PARITY");
-        jComboBox_endLine.setSelectedItem("None");
+        jComboBoxPer.setSelectedItem("None");
 
         jCombo_comPort.setEnabled(true);
         jProgressBar_comStatus.setValue(0);
