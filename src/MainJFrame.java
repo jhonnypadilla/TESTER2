@@ -17,6 +17,8 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import java.io.OutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,14 +27,17 @@ public class MainJFrame extends javax.swing.JFrame {
     SerialPort serialPort1;
     OutputStream outputStream1;
     String dataBuffer = "";
+    private boolean running = false;
 
+    
+    
     public MainJFrame() {
         initComponents();
 
         configuracionInicial();
 
         cargarProtocolos();
-       
+
     }
 
     @SuppressWarnings("unchecked")
@@ -63,11 +68,8 @@ public class MainJFrame extends javax.swing.JFrame {
         jTextField_dataToSend = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jComboProtocols = new javax.swing.JComboBox<>();
+        jButton_Stop = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu4 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Java Serial Communication");
@@ -161,14 +163,14 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jButton_close.setText("CLOSE");
+        jButton_close.setText("CLOSE ");
         jButton_close.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_closeActionPerformed(evt);
             }
         });
 
-        jButton_open.setText("OPEN");
+        jButton_open.setText("OPEN ");
         jButton_open.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_openActionPerformed(evt);
@@ -237,19 +239,12 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
-        jMenu1.setText("File");
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Tx menu");
-
-        jMenu4.setText("jMenu4");
-        jMenu2.add(jMenu4);
-
-        jMenuBar1.add(jMenu2);
-
-        jMenu3.setText("Rx menu");
-        jMenuBar1.add(jMenu3);
-
+        jButton_Stop.setText("STOP");
+        jButton_Stop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_StopActionPerformed(evt);
+            }
+        });
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -267,19 +262,18 @@ public class MainJFrame extends javax.swing.JFrame {
                         .addComponent(jLabel7)
                         .addGap(18, 18, 18)
                         .addComponent(jComboBoxPer, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton_Stop, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton_send, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jTextField_dataToSend, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE))
-                        .addContainerGap())
+                        .addComponent(jButton_send, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField_dataToSend)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboProtocols, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -292,12 +286,12 @@ public class MainJFrame extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton_send, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jComboBoxPer, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7))
-                        .addGap(10, 10, 10))
+                            .addComponent(jLabel7)
+                            .addComponent(jButton_Stop, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -306,7 +300,7 @@ public class MainJFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField_dataToSend, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
         pack();
@@ -315,6 +309,8 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jButton_closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_closeActionPerformed
         cerrarConexion();
+        setRunning(true);
+        jButton_send.setEnabled(false);
     }//GEN-LAST:event_jButton_closeActionPerformed
 
     private void jButton_openActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_openActionPerformed
@@ -359,36 +355,60 @@ public class MainJFrame extends javax.swing.JFrame {
         try {
             sendMessage();
         } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
             Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton_sendActionPerformed
 
-    private void sendMessage() throws InterruptedException{
+    private void sendMessage() throws InterruptedException {
         outputStream1 = serialPort1.getOutputStream();
         String dataTosen = jTextField_dataToSend.getText();
-        try{
-        if(jComboBoxPer.getSelectedItem().toString().equals("SI")){
-            sendPersistenceSend(dataTosen);
-        }else{
-            outputStream1.write(dataTosen.getBytes());
-        }
-          } catch (IOException e) {
+        try {
+            if (jComboBoxPer.getSelectedItem().toString().equals("SI")) {
+                sendPersistenceSend(()->functionPersistenceSend(dataTosen));
+            } else {
+                outputStream1.write(dataTosen.getBytes());
+            }
+        } catch (IOException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
-    
-    private void sendPersistenceSend(String dataTosend) throws InterruptedException{
-        while (true) {      
+
+    private void sendPersistenceSend( Runnable functionPersistence ) throws InterruptedException {
+        Timer debounceTimer = new Timer();
+        debounceTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                functionPersistence.run();
+            }
+        }, 1);
+    }
+
+    public void functionPersistenceSend(String dataTosend) {
+        changeStatusPersistence();
+        jButton_send.setEnabled(false);
+        while (!isRunning()) {
             try {
-                System.out.println("Aqui");
+                System.out.println("Enviando Mensaje...");
                 outputStream1.write(dataTosend.getBytes());
             } catch (IOException ex) {
                 Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
-            Thread.sleep(2000);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     
+    public void changeStatusPersistence(){
+        if(isRunning()){
+            setRunning(false);
+        }
+    }
+
     private void Serial_EventBasedReading(SerialPort activePort) {
         activePort.addDataListener(new SerialPortDataListener() {
             @Override
@@ -408,7 +428,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     }
     private void jTextField_dataToSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_dataToSendActionPerformed
-
+        
     }//GEN-LAST:event_jTextField_dataToSendActionPerformed
 
     private void jComboProtocolsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboProtocolsActionPerformed
@@ -422,6 +442,11 @@ public class MainJFrame extends javax.swing.JFrame {
     private void jComboBoxPerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxPerActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxPerActionPerformed
+
+    private void jButton_StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_StopActionPerformed
+        setRunning(true);
+        jButton_send.setEnabled(true);
+    }//GEN-LAST:event_jButton_StopActionPerformed
 
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -454,6 +479,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton_Stop;
     private javax.swing.JButton jButton_close;
     private javax.swing.JButton jButton_open;
     private javax.swing.JButton jButton_send;
@@ -472,10 +498,6 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -486,14 +508,14 @@ public class MainJFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     public void procesarRespuesta(String respuesta) {
-        System.out.println("Respuesta "+respuesta);
+        System.out.println("Respuesta " + respuesta);
         switch (respuesta) {
             case Constantes.RESPUESTA_BLUE_SKY:
                 jTextArea_incomingData.append("Conexion establecida Blue Sky\n");
                 dataBuffer = "";
                 break;
             case Constantes.RESPUESTA_GILBARCO:
-               
+
                 jTextArea_incomingData.append("Conexion establecida Gilbarco\n");
                 dataBuffer = "";
                 break;
@@ -574,6 +596,14 @@ public class MainJFrame extends javax.swing.JFrame {
                 configuracionInicial();
                 break;
         }
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
 }
