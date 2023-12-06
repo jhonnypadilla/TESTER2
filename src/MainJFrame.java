@@ -343,7 +343,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jButton_closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_closeActionPerformed
         cerrarConexion();
-        setRunning(true);
+        setRunning(true); 
         jButton_send.setEnabled(false);
     }//GEN-LAST:event_jButton_closeActionPerformed
 
@@ -609,25 +609,25 @@ public class MainJFrame extends javax.swing.JFrame {
     public void configuracionProtocolos(String protocolo) {
         switch (protocolo) {
             case Constantes.GILBARCO:
-                jCombo_baudRate.setSelectedItem("57600");
+                jCombo_baudRate.setSelectedItem("5760");
                 jCombo_dataBits.setSelectedItem("8");
                 jCombo_stopBits.setSelectedItem("1");
                 jCombo_parityBits.setSelectedItem("Even");
-                jTextField_dataToSend.setText("Pregunta 1");
+                jTextField_dataToSend.setText("despertando gilbarco");
                 break;
             case Constantes.WAYNE:
                 jCombo_baudRate.setSelectedItem("9600");
                 jCombo_dataBits.setSelectedItem("8");
                 jCombo_stopBits.setSelectedItem("1");
                 jCombo_parityBits.setSelectedItem("Odd");
-                jTextField_dataToSend.setText("Pregunta 2");
+                jTextField_dataToSend.setText("despertando wayne");
                 break;
             case Constantes.BLUE_SKY:
                 jCombo_baudRate.setSelectedItem("9600");
                 jCombo_dataBits.setSelectedItem("8");
                 jCombo_stopBits.setSelectedItem("1");
                 jCombo_parityBits.setSelectedItem("None");
-                jTextField_dataToSend.setText("Pregunta 3");
+                jTextField_dataToSend.setText("despertando blueskay");
                 break;
             default:
                 configuracionInicial();
